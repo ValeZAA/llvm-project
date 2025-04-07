@@ -935,7 +935,10 @@ bool RocmInstallationDetector::checkCommonBitcodeLibs(
     return false;
   }
   if (ABIVer.requiresLibrary() && getABIVersionPath(ABIVer).empty()) {
-    D.Diag(diag::err_drv_no_rocm_device_lib) << 2 << ABIVer.toString();
+    if (ABIVer.getAsCodeObjectVersion() < 6)
+      D.Diag(diag::err_drv_no_rocm_device_lib) << 2 << ABIVer.toString() << 0;
+    else
+      D.Diag(diag::err_drv_no_rocm_device_lib) << 2 << ABIVer.toString() << 1;
     return false;
   }
   return true;
